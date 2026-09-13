@@ -1,0 +1,29 @@
+name: Build FT5 DLL
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSVC (x64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - name: Compile C++ to 64-bit DLL
+      run: |
+        cl /LD /EHsc /Fe:ElderImpulse.dll ElderImpulse.cpp user32.lib gdi32.lib /I.
+
+    - name: Upload DLL Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FT5_ElderImpulse_DLL
+        path: ElderImpulse.dll
